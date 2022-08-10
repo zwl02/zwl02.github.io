@@ -152,6 +152,71 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-acme.sh" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="1-安装acme"><a href="#1-安装acme" class="headerlink" title="1.安装acme"></a>1.安装acme</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl  https://get.acme.sh | sh</span><br><span class="line">alias acme.sh=~/.acme.sh/acme.sh#简化命令</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-DNS验证方式申请证书"><a href="#2-DNS验证方式申请证书" class="headerlink" title="2.DNS验证方式申请证书"></a>2.DNS验证方式申请证书</h2><h3 id="2-1颁发证书"><a href="#2-1颁发证书" class="headerlink" title="2.1颁发证书"></a>2.1颁发证书</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --issue -d *.itoken.team -d itoken.team --dns --yes-I-know-dns-manual-mode-enough-go-ahead-please</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2修改DNS"><a href="#2-2修改DNS" class="headerlink" title="2.2修改DNS"></a>2.2修改DNS</h3><ul>
+<li>在DNS服务商处修改，添加TXT value</li>
+</ul>
+<h3 id="2-3验证解析是否生效"><a href="#2-3验证解析是否生效" class="headerlink" title="2.3验证解析是否生效"></a>2.3验证解析是否生效</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dig -t txt  _acme-challenge.itoken.team @8.8.8.8</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4生成证书"><a href="#2-4生成证书" class="headerlink" title="2.4生成证书"></a>2.4生成证书</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --renew  -d itoken.team --dns --yes-I-know-dns-manual-mode-enough-go-ahead-please</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-安装证书"><a href="#3-安装证书" class="headerlink" title="3.安装证书"></a>3.安装证书</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">acme.sh  --installcert  -d  itoken.team   \</span><br><span class="line">        --key-file   /etc/nginx/ssl/itoken.team.key \</span><br><span class="line">        --fullchain-file /etc/nginx/ssl/fullchain.cer \</span><br><span class="line">        --reloadcmd  &quot;docker restart nginx&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-Nginx配置使用证书"><a href="#4-Nginx配置使用证书" class="headerlink" title="4.Nginx配置使用证书"></a>4.Nginx配置使用证书</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen 80;</span><br><span class="line">        server_name itoken.team;</span><br><span class="line">        ssl on;</span><br><span class="line">        root html;</span><br><span class="line">        index index.html index.htm;</span><br><span class="line">        ssl_certificate   /etc/nginx/ssl/fullchain.cer;</span><br><span class="line">        ssl_certificate_key  /etc/nginx/ssl/itoken.team.key;</span><br><span class="line">        ssl_session_timeout 5m;</span><br><span class="line">        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;</span><br><span class="line">        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">        ssl_prefer_server_ciphers on;</span><br><span class="line">        location / &#123;</span><br><span class="line">            root html;</span><br><span class="line">            index index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-曾用txtvalue"><a href="#5-曾用txtvalue" class="headerlink" title="5.曾用txtvalue"></a>5.曾用txtvalue</h2><ul>
+<li>eMYIvSkGeDIMxWyTFdlkEEx0bmS90MRKsIerVjJe8QE</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/08/10/acme.sh/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
